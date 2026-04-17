@@ -6,7 +6,7 @@
 
 #### Unrendered notebook (Google Colab)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jonassterud/OCES5303_A2/blob/master/ass3_oces5303_21335836.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jonassterud/OCES5303_A3/blob/master/ass3_oces5303_21335836.ipynb)
 
 #### Rendered notebook (VS Code)
 

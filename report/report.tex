@@ -1,0 +1,81 @@
+\documentclass[12pt,a4paper,english]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,hmargin=10mm,vmargin=25mm]{geometry}
+\usepackage[backend=biber,style=numeric,sortcites,firstinits=true]{biblatex}
+\usepackage[skip=5pt, indent=0pt]{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+\usepackage{textcomp}
+\usepackage{url}
+\usepackage{csquotes}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+\urlstyle{sf}
+\addbibresource{./refs.bib}
+\graphicspath{ {../figures/} }
+
+\title{\textbf{OCES5303} \linebreak Extended Project}
+\author{Jonas Mathisrud Sterud}
+
+\begin{document}
+    \maketitle
+
+    \begin{abstract}
+        Abstract here!
+    \end{abstract}
+
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=15cm]{cover.jpg}
+        \end{center}
+    \end{figure}
+
+    \newpage
+    \tableofcontents
+    \newpage
+
+    \section{The Data}
+
+    \subsection{Raw data}
+
+    We have five different folders with data:
+    \begin{description}[labelindent=1cm]
+        \item[TRAIN\_png] - Dated \verb|.png| training images across various categories.
+        \item[TEST\_png] - Dated \verb|.png| testing images across various categories.
+        \item[LABELS\_TRAIN] - Dated \verb|.csv| files with training labels.
+        \item[train\_images\_pkl] - Dated folders, each containing various \verb|.pkl| files for the traning dataset.
+        \item[test\_image\_pkl] - Dated folders, each containing various \verb|.pkl| files for the test dataset.
+    \end{description}
+    
+    The \verb|.pkl| files contain various useful information, such as the contours and centres of the cyclonic and anticyclonic eddy's (in the training set).
+    They also contain latitude and longitude positions of the images, which we'll use later for visualization.
+
+    Additionaly, we have labels for the test dataset as a \verb|.pkl| file.
+
+    \subsection{Parsing}
+
+    We load, and parse, all the \verb|.pkl| files and put them into a dictionary.
+    The \verb|.png| images are loaded in as grayscale images, and are then sorted under their respective dates, categories and image numbers - which are extracted from their filenames.
+    
+    Then, we combine all the images, and their corresponding metadata (from the \verb|.pkl| files) into a Pandas \verb|Dataframe|.
+
+    \subsection{Analysis}
+
+
+
+%    \tableofcontents
+%    \newpage
+
+
+
+%    \newpage
+%    \printbibliography
+\end{document}

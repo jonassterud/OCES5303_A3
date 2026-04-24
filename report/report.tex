@@ -46,10 +46,10 @@
 
     \subsection{Raw data}
 
-    We have five different folders with data:
+    We have five different folders with data, retrieved from the ``Ocean Eddy Identification'' competition \cite{data:mercatorocean}:
     \begin{description}[labelindent=1cm]
-        \item[TRAIN\_png] - Dated \verb|.png| training images across various categories.
-        \item[TEST\_png] - Dated \verb|.png| testing images across various categories.
+        \item[TRAIN\_png] - Dated \verb|.png| satellite training images across various categories.
+        \item[TEST\_png] - Dated \verb|.png| satellite testing images across various categories.
         \item[LABELS\_TRAIN] - Dated \verb|.csv| files with training labels.
         \item[train\_images\_pkl] - Dated folders, each containing various \verb|.pkl| files for the traning dataset.
         \item[test\_image\_pkl] - Dated folders, each containing various \verb|.pkl| files for the test dataset.
@@ -58,7 +58,9 @@
     The \verb|.pkl| files contain various useful information, such as the contours and centres of the cyclonic and anticyclonic eddy's (in the training set).
     They also contain latitude and longitude positions of the images, which we'll use later for visualization.
 
-    Additionaly, we have labels for the test dataset as a \verb|.pkl| file.
+    Additionally, we have labels for the test dataset as a \verb|.pkl| file.
+
+    Our image labels are one of: \verb|0|, \verb|1| or \verb|2|.
 
     \subsection{Parsing}
 
@@ -67,15 +69,68 @@
     
     Then, we combine all the images, and their corresponding metadata (from the \verb|.pkl| files) into a Pandas \verb|Dataframe|.
 
-    \subsection{Analysis}
+    \section{Exploratory Data Analysis}    
 
+    \subsection{Image categories}
 
+    We have four different image categories, displaying different properties:
+    \begin{description}[labelindent=1cm]
+        \item[SST] - Temperature of the sea surface.
+        \item[CHLA] - Concentration of Chlorophyll-a.
+        \item[SLA] - Sea Level Anomalies (i.e. height of the sea).
+        \item[EDDY] - Contours of the cyclones (as images).
+    \end{description}
+    
+    The figures below, shows a small sample of these images, from top to bottom (SST, CHLA, SLA, EDDY), categorized into our three labels.
+
+    \begin{minipage}{.33\textwidth}
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=.9\textwidth]{images_with_no_cyclone.png}
+                \caption{No cyclonic eddies}
+            \end{center}
+        \end{figure}
+    \end{minipage}
+    \begin{minipage}{.33\textwidth}
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=.9\textwidth]{images_with_cyclone.png}
+                \caption{Cyclonic eddies}
+            \end{center}
+        \end{figure}
+    \end{minipage}
+    \begin{minipage}{.33\textwidth}
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=.9\textwidth]{images_with_anticyclone.png}
+                \caption{Anticyclonic eddies}
+            \end{center}
+        \end{figure}
+    \end{minipage}
+
+    Since our images are from the northern hemisphere (\ref{fig:sst_map}), the anticyclonic eddies and cyclonic eddies
+    are rotating clockwise, and counterclockwise, respectively. \cite{article:nutrition_eddies}
+
+    In a cyclonic eddy, we would expect phytoplankton to grow in the edges of the eddy near the surface (due to the supply of nutrient-rich bottom-water), and
+    therefore show up as a chlorophyll circle in our images. \cite{website:tracking_eddies}
+
+    This does not seem to be very obvious - at least in this small subset of images.
+
+    Furthermore, we would expect the cyclonic eddies (counterclockwise) to have a cold core and the anticyclonic eddies (clockwise) to have a warm core. \cite{article:eddy_temperature}
+    
+    This, however, seems to be quite obvious for the majority of our images.
+
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=.9\textwidth]{sst_map_train.png}
+            \caption{Subset of SST images drawn on a map, together with cyclone markers (red)}
+            \label{fig:sst_map}
+        \end{center}
+    \end{figure}
 
 %    \tableofcontents
 %    \newpage
 
-
-
-%    \newpage
-%    \printbibliography
+   \newpage
+   \printbibliography
 \end{document}

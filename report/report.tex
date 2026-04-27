@@ -29,7 +29,9 @@
     \maketitle
 
     \begin{abstract}
-        Abstract here!
+        Historically, oceanic eddies have been detected using ``Sea Level Anomolies'' (SLA) satellite images.
+        However, the SLA resolution limits the accuracy - therefore, we'll deploy a ``Convolutional Neural Network'' (CNN)
+        to detect eddies using other satellite formats without such limitations: ``Sea Surface Temperature'' (SST) and ``Chlorophyll-a'' (CHLA).
     \end{abstract}
 
     \begin{figure}[H]
@@ -133,7 +135,7 @@
     that they're taken close to land - we might be getting some interference from the shore.
 
     These images were filtered out by scaling each image using a \verb|MinMaxScaler| (with a range between negative one and positive one), and removing any images with an absolute pixel sum above
-    93\% (trial and error) of our samples.
+    95\% of our samples.
 
 %    \tableofcontents
 %    \newpage

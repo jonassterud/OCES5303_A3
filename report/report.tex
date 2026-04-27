@@ -123,10 +123,17 @@
     \begin{figure}[H]
         \begin{center}
             \includegraphics[width=.9\textwidth]{sst_map_train.png}
-            \caption{Subset of SST images drawn on a map, together with cyclone markers (red)}
+            \caption{Subset of SST images on a map, together with cyclone markers (red dots)}
             \label{fig:sst_map}
         \end{center}
     \end{figure}
+
+    By plotting all the images at their corresponding positions, we see that all of our observations are in the northern hemisphere.
+    Additionally, some of the images seem to be corrupt, in that they are almost only one solid color. The common factor between these images seems to be
+    that they're taken close to land - we might be getting some interference from the shore.
+
+    These images were filtered out by scaling each image using a \verb|MinMaxScaler| (with a range between negative one and positive one), and removing any images with an absolute pixel sum above
+    93\% (trial and error) of our samples.
 
 %    \tableofcontents
 %    \newpage

@@ -10,6 +10,7 @@
 \usepackage{indentfirst}
 \usepackage{enumitem}
 \usepackage{textcomp}
+\usepackage{caption}
 \usepackage{url}
 \usepackage{csquotes}
 \usepackage{graphicx}
@@ -46,7 +47,7 @@
 
     \section{The Data}
 
-    \subsection{Raw data}
+    \subsection{Overview}
 
     We have five different folders with data, retrieved from the ``Ocean Eddy Identification'' competition \cite{data:mercatorocean}:
     \begin{description}[labelindent=1cm]
@@ -73,7 +74,7 @@
 
     \section{Exploratory Data Analysis}    
 
-    \subsection{Image categories}
+    \subsection{Image Categories}
 
     We have four different image categories, displaying different properties:
     \begin{description}[labelindent=1cm]
@@ -122,20 +123,128 @@
     
     This, however, seems to be quite obvious for the majority of our images.
 
-    \begin{figure}[H]
-        \begin{center}
-            \includegraphics[width=.9\textwidth]{sst_map_train.png}
-            \caption{Subset of SST images on a map, together with cyclone markers (red dots)}
-            \label{fig:sst_map}
-        \end{center}
-    \end{figure}
+    \subsection{Filtering Images}
+
+    \begin{center}
+        \begin{minipage}{.49\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=\textwidth]{sst_map_train.png}
+                    \caption{SST images}
+                    \label{fig:sst_map}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+        \begin{minipage}{.49\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=\textwidth]{chla_map_train.png}
+                    \caption{CHLA images}
+                    \label{fig:chla_map}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+    \end{center}
 
     By plotting all the images at their corresponding positions, we see that all of our observations are in the northern hemisphere.
-    Additionally, some of the images seem to be corrupt, in that they are almost only one solid color. The common factor between these images seems to be
-    that they're taken close to land - we might be getting some interference from the shore.
+    Additionally, some of the images seem to be corrupt, in that they are almost only one solid color. The common factor between these images for the SST images seems to be
+    that they're taken close to land - we might be getting some interference from the shore. For the CHLA images, we see that most of the images seem to be corrupted - this is most
+    likely due to cloud cover.
 
-    These images were filtered out by scaling each image using a \verb|MinMaxScaler| (with a range between negative one and positive one), and removing any images with an absolute pixel sum above
-    95\% of our samples.
+    For SST, a good filtering strategy turned out to be mapping all of the images to a scale from negative one to positive one, and then filtering out images where the absolute pixel sums were in the top 6\% of images.
+    Similary, for CHLA, mapping all of the images to a scale from zero to positive one, and filtering out images where the pixel sum were in the bottom 98\%, turned out to be a good filter, as seen below.
+    
+    \begin{center}
+        \begin{minipage}{.49\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=\textwidth]{sst_map_train_filtered_in.png}
+                    \caption{SST images, filtered in}
+                    \label{fig:sst_map_filtered_in}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+        \begin{minipage}{.49\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=\textwidth]{chla_map_train_filtered_in.png}
+                    \caption{CHLA images, filtered in}
+                    \label{fig:chla_map_filtered_in}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+    \end{center}
+    \begin{center}
+        \begin{minipage}{.49\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=\textwidth]{sst_map_train_filtered_out.png}
+                    \caption{SST images, filtered out}
+                    \label{fig:sst_map_filtered_out}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+        \begin{minipage}{.49\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=\textwidth]{chla_map_train_filtered_out.png}
+                    \caption{CHLA images, filtered out}
+                    \label{fig:chla_map_filtered_out}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+    \end{center}
+
+    \section{Transforming Images}
+
+    \subsection{Orientation}
+
+    In the matrix containing per-pixel latitude coordinates for CHLA, it was discovered that the CHLA images are essentially flipped
+    vertically relative to the SST images. To resolve this, all of the CHLA images were flipped vertically, as illustrated below.
+
+    \begin{center}
+        \begin{minipage}{.329\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=.8\textwidth]{sst_before_flip.png}
+                    \caption{SST}
+                    \label{fig:sst_before_flip}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+        \begin{minipage}{.329\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=.8\textwidth]{chla_before_flip.png}
+                    \caption{CHLA}
+                    \label{fig:chla_before_flip}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+        \begin{minipage}{.329\textwidth}
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[width=.8\textwidth]{chla_after_flip.png}
+                    \caption{CHLA (flipped)}
+                    \label{fig:chla_after_flip}
+                \end{center}
+            \end{figure}
+        \end{minipage}
+    \end{center}
+
+    \subsection{Scaling and Resizing}
+
+
+
+    
+
+
+
+    
+
+
+    % These images were filtered out by scaling each image using a \verb|MinMaxScaler| (with a range between negative one and positive one), and removing any images with an absolute pixel sum above
+    % 95\% of our samples.
 
 %    \tableofcontents
 %    \newpage

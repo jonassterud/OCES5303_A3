@@ -91,6 +91,7 @@
             \begin{center}
                 \includegraphics[width=.9\textwidth]{images_with_no_cyclone.png}
                 \caption{No cyclonic eddies}
+                \label{fig:no_cyclonic_eddies}
             \end{center}
         \end{figure}
     \end{minipage}
@@ -99,6 +100,7 @@
             \begin{center}
                 \includegraphics[width=.9\textwidth]{images_with_cyclone.png}
                 \caption{Cyclonic eddies}
+                \label{fig:cyclonic_eddies}
             \end{center}
         \end{figure}
     \end{minipage}
@@ -107,11 +109,12 @@
             \begin{center}
                 \includegraphics[width=.9\textwidth]{images_with_anticyclone.png}
                 \caption{Anticyclonic eddies}
+                \label{fig:anticyclonic_eddies}
             \end{center}
         \end{figure}
     \end{minipage}
 
-    Since our images are from the northern hemisphere (\ref{fig:sst_map}), the anticyclonic eddies and cyclonic eddies
+    Since our images are from the northern hemisphere (\ref{fig:sst_map}) (\ref{fig:chla_map}), the anticyclonic eddies and cyclonic eddies
     are rotating clockwise, and counterclockwise, respectively. \cite{article:nutrition_eddies}
 
     In a cyclonic eddy, we would expect phytoplankton to grow in the edges of the eddy near the surface (due to the supply of nutrient-rich bottom-water), and
@@ -120,8 +123,6 @@
     This does not seem to be very obvious - at least in this small subset of images.
 
     Furthermore, we would expect the cyclonic eddies (counterclockwise) to have a cold core and the anticyclonic eddies (clockwise) to have a warm core. \cite{article:eddy_temperature}
-    
-    This, however, seems to be quite obvious for the majority of our images.
 
     \subsection{Filtering Images}
 
@@ -199,8 +200,9 @@
 
     \subsection{Orientation}
 
-    In the matrix containing per-pixel latitude coordinates for CHLA, it was discovered that the CHLA images are essentially flipped
-    vertically relative to the SST images. To resolve this, all of the CHLA images were flipped vertically, as illustrated below.
+    In the matrix containing per-pixel latitude coordinates for SST, it was discovered that the SST images are essentially flipped
+    vertically. To resolve this, all of the SST images were flipped along their vertical axis, as illustrated below.
+    This was not the case with the CHLA images.
 
     \begin{center}
         \begin{minipage}{.329\textwidth}
@@ -215,9 +217,9 @@
         \begin{minipage}{.329\textwidth}
             \begin{figure}[H]
                 \begin{center}
-                    \includegraphics[width=.8\textwidth]{chla_before_flip.png}
-                    \caption{CHLA}
-                    \label{fig:chla_before_flip}
+                    \includegraphics[width=.8\textwidth]{sst_after_flip.png}
+                    \caption{SST (flipped)}
+                    \label{fig:sst_after_flip}
                 \end{center}
             \end{figure}
         \end{minipage}
@@ -225,7 +227,7 @@
             \begin{figure}[H]
                 \begin{center}
                     \includegraphics[width=.8\textwidth]{chla_after_flip.png}
-                    \caption{CHLA (flipped)}
+                    \caption{CHLA}
                     \label{fig:chla_after_flip}
                 \end{center}
             \end{figure}
@@ -234,7 +236,18 @@
 
     \subsection{Scaling and Resizing}
 
+    There's different resolutions both inter- and intra-category between SST and CHLA.
+    We need to resize these images in order to make the compatible with PyTorch's tensors.
 
+    There's various methods to do this, most of which require some form of interpolation.
+    But, given the low resolution, and the potential loss of quality, this might not be a good solution.
+
+    Considering that we seem to be classifying images where the eddies are centered in the
+    image (\ref{fig:cyclonic_eddies}) (\ref{fig:anticyclonic_eddies}), and that the images are \textit{almost} the same resolution,
+    cropping the edges of the images seemed to be a better solution.
+
+    Additionaly, the images are are in greyscale, with pixel values between 0 and 255.
+    We'll scale these values before feeding them into our model, using a \verb|MinMaxScaler| to a range between 0 and 1.
 
     
 

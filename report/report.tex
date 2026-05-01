@@ -124,7 +124,7 @@
 
     Furthermore, we would expect the cyclonic eddies (counterclockwise) to have a cold core and the anticyclonic eddies (clockwise) to have a warm core. \cite{article:eddy_temperature}
 
-    \subsection{Filtering Images}
+    \subsection{Filtering Images} \label{sec:filtering_images}
 
     \begin{center}
         \begin{minipage}{.49\textwidth}
@@ -249,9 +249,20 @@
     Additionaly, the images are are in greyscale, with pixel values between 0 and 255.
     We'll scale these values before feeding them into our model, using a \verb|MinMaxScaler| to a range between 0 and 1.
 
-    \subsection{Masking}
+    \subsection{Applying Filtering}
 
-    \dots
+    As showed previously (\ref{sec:filtering_images}), we have a way to filter out ``corrupt'' images.
+
+    For SST, the reasoning for the corrupted images seems to be quite obvious, in that there's some interference from the land.
+    Considering there's also so few samples, it seems quite safe to remove these from our training samples, but we'll test multipile implementations.
+
+    However, for the CHLA images, we're filtering out approximately 92\% of the images, and removing these would most likely degrade the performance
+    of our model quite severely. There's other options, such as masking out the corrupt images, e.g. by filling them with zeros.
+    We could also add a new channel, which specifies if an image is corrupt or not, e.g. a channel where all the pixels are ones marks for corrupt CHLA images
+    and vice-versa for zeros. These approaches are also something we could do for the SST images.
+
+    We'll try various techniques and see which ones perform well on our data
+
 
     \section{Convolution Neural Network}
 
@@ -264,9 +275,20 @@
     \cite{enwiki:1349825931}
     \cite{dumoulin2016guide}
 
+    \subsection{Configuration}
+
+    \dots
 
 
+    \subsection{Model Selection}
 
+    \dots
+
+    \subsection{Loss}
+
+    \section{Results}
+
+    \dots
 
     
 

@@ -7,6 +7,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
+\usepackage[table]{xcolor}
 \usepackage{indentfirst}
 \usepackage{enumitem}
 \usepackage{textcomp}
@@ -250,7 +251,7 @@
     Additionaly, the images are are in greyscale, with pixel values between 0 and 255.
     We'll scale these values before feeding them into our model, using a \verb|MinMaxScaler| to a range between 0 and 1.
 
-    \subsection{Applying Filtering}
+    \subsection{Applying Filtering} \label{sec:applying_filtering}
 
     As showed previously (\ref{sec:filtering_images}), we have a way to filter out ``corrupt'' images.
 
@@ -299,18 +300,47 @@
         \item Transforming into tensors.
     \end{itemize}
 
-    Below, is an overview of the various pipelines configurations to handle corrupt images and their metrics:
+    The training dataset has some inbalance in the distribution between classes, we have approximately:
+    \begin{itemize}
+        \item No eddies: 38.15\%
+        \item Cyclonic eddies: 32.76\%
+        \item Anticyclonic eddies: 29.10\%
+    \end{itemize}
+
+    We therefore calculate balanced class weights, which are used in the \verb|CrossEntropyLoss|.
+    The CNN filter weights are updated using \verb|AdamW|, and we adjust the learning rate using a cosine annealing schedule.
+
+    Below, is an overview of pipelines with various filtering techniques (\ref{sec:applying_filtering}) to handle corrupt images, and their approximate accuracies on a validation set:
 
     \begin{center}
-        \begin{tabular}{c|c|c||c|c}
-            \textit{Removed} & \textit{Masked} & \textit{Tagged} & \textbf{Accuracy} & \textbf{Balanced accuracy} \\ \hline
-            &&& \dots & \dots \\
-            SST &&& \dots & \dots \\
-            SST &&& \dots & \dots \\
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline \rowcolor{black!20} \textit{Removed} & \textit{Masked} & \textit{Tagged} & \textbf{Accuracy} & \textbf{Balanced accuracy} \\ \hline \hline
+            &&& 68.7\% & 68.6\%. \\ \hline
+            SST &&& 70.3\% & 69.8\% \\ \hline
+            & SST && 68.2\% & 67.6\% \\ \hline
+            && SST & 65.3\% & 65.1\% \\ \hline
+            \rowcolor{black!10} SST & CHLA && 70.2\% & \textbf{70.0}\% \\ \hline
+            SST && CHLA & 69.0\% & 68.6\% \\ \hline
+            & SST, CHLA && 68.4\% & 67.9\% \\ \hline
+            & SST & CHLA & 66.7\% & 66.4\% \\ \hline
+            & CHLA & SST & 67.7\% & 67.5\% \\ \hline
+            && SST, CHLA & 67.5\% & 67.3\% \\ \hline
         \end{tabular}
     \end{center}
 
     \subsection{Loss}
+
+    The model, where corrupt SST images were removed, and corrupt CHLA images were masked, achieved the highest balanced accuracy.
+    Below is the loss seen during training.
+
+     \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=.8\textwidth]{loss_5.png}
+            \caption{Training and validation loss}
+            \label{fig:loss}
+        \end{center}
+    \end{figure}
+
 
     \subsection{Results}
 

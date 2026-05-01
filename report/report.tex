@@ -18,6 +18,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
+\usepackage{multirow}
 
 \urlstyle{sf}
 \addbibresource{./refs.bib}
@@ -198,7 +199,7 @@
 
     \section{Transforming Images}
 
-    \subsection{Orientation}
+    \subsection{Orientation} \label{sec:orientation}
 
     In the matrix containing per-pixel latitude coordinates for SST, it was discovered that the SST images are essentially flipped
     vertically. To resolve this, all of the SST images were flipped along their vertical axis, as illustrated below.
@@ -234,7 +235,7 @@
         \end{minipage}
     \end{center}
 
-    \subsection{Scaling and Resizing}
+    \subsection{Scaling and Resizing} \label{sec:scaling_and_resizing}
 
     There's different resolutions both inter- and intra-category between SST and CHLA.
     We need to resize these images in order to make the compatible with PyTorch's tensors.
@@ -282,13 +283,36 @@
     The two first layers use \verb|MaxPool2d| with a sliding $2 \times 2$ window - selecting the maximum value within its window.
     The final convolution layer, uses \verb|AdaptiveAvgPool2d|, which \dots TODO
 
-    \subsection{Model Selection}
+    After the convolution layers, we have a fully connected layer, which halves the current amount of features.
+    We then apply batch normalization, the ReLU activation function, and, to mitigate overfitting, a \verb|Dropout| layer with a probability set to 65\%.
 
-    \dots
+    Finally, we have another fully connected layer, which scales down our features into three outputs (one for each label).
+
+    \section{Model Selection}
+
+    \subsection{Pipelines}
+
+    We test multipile pipelines, but all which have some default steps:
+    \begin{itemize}
+        \item Orientating the images (\ref{sec:orientation})
+        \item Scaling and resizing the images (\ref{sec:scaling_and_resizing})
+        \item Transforming into tensors.
+    \end{itemize}
+
+    Below, is an overview of the various pipelines configurations to handle corrupt images and their metrics:
+
+    \begin{center}
+        \begin{tabular}{c|c|c||c|c}
+            \textit{Removed} & \textit{Masked} & \textit{Tagged} & \textbf{Accuracy} & \textbf{Balanced accuracy} \\ \hline
+            &&& \dots & \dots \\
+            SST &&& \dots & \dots \\
+            SST &&& \dots & \dots \\
+        \end{tabular}
+    \end{center}
 
     \subsection{Loss}
 
-    \section{Results}
+    \subsection{Results}
 
     \dots
 

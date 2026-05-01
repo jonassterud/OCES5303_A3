@@ -257,12 +257,11 @@
     Considering there's also so few samples, it seems quite safe to remove these from our training samples, but we'll test multipile implementations.
 
     However, for the CHLA images, we're filtering out approximately 92\% of the images, and removing these would most likely degrade the performance
-    of our model quite severely. There's other options, such as masking out the corrupt images, e.g. by filling them with zeros.
-    We could also add a new channel, which specifies if an image is corrupt or not, e.g. a channel where all the pixels are ones marks for corrupt CHLA images
-    and vice-versa for zeros. These approaches are also something we could do for the SST images.
+    of our model quite severely. There's other options, such as masking out the corrupt images, e.g. by filling them with ones/zeros.
+    We could also add a new channel, which specifies if an image is corrupt or not, e.g. a channel where all the pixels are ones/zeros marks for corrupt CHLA images
+    and vice-versa. These approaches are also something we could do for the SST images.
 
     We'll try various techniques and see which ones perform well on our data
-
 
     \section{Convolution Neural Network}
 
@@ -277,8 +276,11 @@
 
     \subsection{Configuration}
 
-    \dots
-
+    For the CNN, we used three convolution layers. All of the convolution layers use a kernel size of three, and padding such that the input and output dimensions have
+    the same dimensions. The first convolution layer transform the input into 16 channels, and each following convolution layer doubles the channel dimensions.
+    Additionally, after convolution, we apply batch normalization, the ReLU activation function, and pooling.
+    The two first layers use \verb|MaxPool2d| with a sliding $2 \times 2$ window - selecting the maximum value within its window.
+    The final convolution layer, uses \verb|AdaptiveAvgPool2d|, which \dots TODO
 
     \subsection{Model Selection}
 

@@ -14,6 +14,7 @@
 \usepackage{caption}
 \usepackage{url}
 \usepackage{csquotes}
+\usepackage{wrapfig}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amsmath}
@@ -52,20 +53,20 @@
     \subsection{Overview}
 
     We have five different folders with data, retrieved from the ``Ocean Eddy Identification'' competition \cite{data:mercatorocean}:
-    \begin{description}[labelindent=1cm]
-        \item[TRAIN\_png] - Dated \verb|.png| satellite training images across various categories.
-        \item[TEST\_png] - Dated \verb|.png| satellite testing images across various categories.
-        \item[LABELS\_TRAIN] - Dated \verb|.csv| files with training labels.
-        \item[train\_images\_pkl] - Dated folders, each containing various \verb|.pkl| files for the traning dataset.
-        \item[test\_image\_pkl] - Dated folders, each containing various \verb|.pkl| files for the test dataset.
-    \end{description}
+    \begin{itemize} % bold? :(
+        \item[] \texttt{\textbf{TRAIN\_PNG}} - Dated \verb|.png| satellite training images across various categories.
+        \item[] \texttt{\textbf{TEST\_PNG}} - Dated \verb|.png| satellite testing images across various categories.
+        \item[] \texttt{\textbf{LABELS\_TRAIN}} - Dated \verb|.csv| files with training labels.
+        \item[] \texttt{\textbf{train\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the traning dataset.
+        \item[] \texttt{\textbf{test\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the test dataset.
+    \end{itemize}
     
     The \verb|.pkl| files contain various useful information, such as the contours and centres of the cyclonic and anticyclonic eddy's (in the training set).
     They also contain latitude and longitude positions of the images, which we'll use later for visualization.
 
     Additionally, we have labels for the test dataset as a \verb|.pkl| file.
 
-    Our image labels are one of: \verb|0|, \verb|1| or \verb|2|.
+    Our image labels are one of: \verb|0| (no eddies), \verb|1| (cyclonic eddies) or \verb|2| (anticyclonic eddies).
 
     \subsection{Parsing}
 
@@ -73,6 +74,16 @@
     The \verb|.png| images are loaded in as grayscale images, and are then sorted under their respective dates, categories and image numbers - which are extracted from their filenames.
     
     Then, we combine all the images, and their corresponding metadata (from the \verb|.pkl| files) into a Pandas \verb|Dataframe|.
+
+    \subsection{Splitting}
+
+    We now have a \verb|DataFrame| with training data, which we use to train our model.
+
+    Additionaly, we have a \verb|DataFrame| with test images.
+    We split this up into two, randomly sampled, \verb|DataFrame|'s: a validation set and a seperate test set.
+    
+    The validation set is used to evaulate the performance of our models during model selection, and then, to get an unbiased metric on the
+    generalization ability of our final model, we'll evaulate it on the test set.
 
     \section{Exploratory Data Analysis}    
 
@@ -308,7 +319,7 @@
     \end{itemize}
 
     We therefore calculate balanced class weights, which are used in the \verb|CrossEntropyLoss|.
-    The CNN filter weights are updated using \verb|AdamW|, and we adjust the learning rate using a cosine annealing schedule.
+    The CNN filter weights are updated using \verb|AdamW|, and we adjust the learning rate using a cosine annealing schedule (with a minimum learning rate of $1\cdot 10^{-4}$).
 
     Below, is an overview of pipelines with various filtering techniques (\ref{sec:applying_filtering}) to handle corrupt images, and their approximate accuracies on a validation set:
 
@@ -333,19 +344,45 @@
     The model, where corrupt SST images were removed, and corrupt CHLA images were masked, achieved the highest balanced accuracy.
     Below is the loss seen during training.
 
-     \begin{figure}[H]
+    \begin{figure}[H]
         \begin{center}
-            \includegraphics[width=.8\textwidth]{loss_5.png}
+            \includegraphics[width=.7\textwidth]{loss.png}
             \caption{Training and validation loss}
             \label{fig:loss}
         \end{center}
     \end{figure}
 
+    There seems to be some overfitting, and this is just 30 epochs - and, increasing the epochs, just increases the overfitting.
 
     \subsection{Results}
+    
+    \begin{minipage}{.49\linewidth}
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=.8\textwidth]{cnn_confusion_matrix_val.png}
+                \caption{Confusion matrix (validation)}
+                \label{fig:cnn_cm_validation}
+            \end{center}
+        \end{figure}
+    \end{minipage}
+    \begin{minipage}{.49\linewidth}
+         \begin{figure}[H]
+            \begin{center}
+                \includegraphics[width=.8\textwidth]{cnn_confusion_matrix_train.png}
+                \caption{Confusion matrix (train)}
+                \label{fig:cnn_cm_train}
+            \end{center}
+        \end{figure}
+    \end{minipage}
 
-    \dots
+    The leftmost figure (\ref{fig:cnn_cm_validation}), shows the confusion matrix from validation data.
+    The current model is decent at classifying images, but around 30\% of classifications are wrong.
 
+    A reasonable conclusion to draw, from looking at this figure, is that the model is suffering due to overfitting - but,
+    the confusion matrix for the training data, on the right (\ref{fig:cnn_cm_train}), tells another story.
+    
+    We have almost the exact same accuracy between the training and validation datasets.
+    The subpar performance of our model might be due to the fully connected layers simply not being very good at this task.
     
 
 

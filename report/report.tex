@@ -35,7 +35,7 @@
     \begin{abstract}
         Historically, oceanic eddies have been detected using ``Sea Level Anomolies'' (SLA) satellite images.
         However, the SLA resolution limits the accuracy - therefore, we'll deploy a ``Convolutional Neural Network'' (CNN)
-        to detect eddies using other satellite formats without such limitations: ``Sea Surface Temperature'' (SST) and ``Chlorophyll-a'' (CHLA).
+        to detect eddy features using other satellite formats without such limitations: ``Sea Surface Temperature'' (SST) and ``Chlorophyll-a'' (CHLA).
     \end{abstract}
 
     \begin{figure}[H]
@@ -60,6 +60,12 @@
         \item[] \texttt{\textbf{train\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the traning dataset.
         \item[] \texttt{\textbf{test\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the test dataset.
     \end{itemize}
+
+    The images in the training set are spread across 34 different dates, ranging from the 1st of May 2017 to the 4th of June 2017.
+    Each date contains between 103 and 184 observations, totalling 4842 images.
+    
+    The testing set, contains observations from the 5th of June 2017 to the 30th of June 2017.
+    Here, each date has between 111 and 228 observations, totalling 4199 images.
     
     The \verb|.pkl| files contain various useful information, such as the contours and centres of the cyclonic and anticyclonic eddy's (in the training set).
     They also contain latitude and longitude positions of the images, which we'll use later for visualization.
@@ -448,6 +454,10 @@
 
     In the figure below (\ref{fig:cnn_rf_cm_test}), we see that it predicted very well for the test data aswell, with a balanced accuracy of approximately 97\%.
 
+    We've acheived a quite robust model, at least for images in this format.
+    Additionaly, the model was tested using multipile various initialization seeds for the random number generators, to further ensure
+    robustness.
+
     \begin{center}
         \begin{minipage}{.2\textwidth}
             \begin{figure}[H]
@@ -462,9 +472,9 @@
                 \begin{center}
                     \hspace*{.3cm} \begin{tabular}{|c|c|}
                         \hline
-                        \textbf{Accuracy} & 97.5\% \\ \hline
-                        \textbf{Balanced accuracy} & 97.2\% \\ \hline
-                        \textbf{Matthews correlation coefficient} & 0.962 \\ \hline
+                        \textbf{Accuracy} & 97.4\% \\ \hline
+                        \textbf{Balanced accuracy} & 97.1\% \\ \hline
+                        \textbf{Matthews correlation coefficient} & 0.961 \\ \hline
                     \end{tabular}
                 \end{center}
                 \begin{center}

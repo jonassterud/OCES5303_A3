@@ -50,24 +50,25 @@
 
     \section{Introduction}
 
-    Oceanic eddies are vortices, either cyclonic or anticyclonic, with a diameter of around 10 km.
-
-    There's various methods to detect eddies using satellite imagery - tradionally detected using ``Sea Level Anomalies'' images, which
-    shows the height variance in the ocean compared to some mean.
+    Oceanic eddies are vortices, either cyclonic or anticyclonic, with a diameter of around 10 km, created either
+    by shears, turbulence, or the general instability between different water masses.
 
     There's many reasons why one would want to detect eddies.
     
     Eddies affect the air-sea heat and moisture flux, which has a local impact on cloud coverage, precipitation, turbulence and wind.
     These effects can of course impact the weather systems across the globe, and detecting eddies can therefore help with more accuracte
-    weather models, tracking climate change, etc.
+    weather models, tracking climate change, etc. \cite{article:frenger_2013}
+
+    Furthermore, both cyclonic- and anticyclonic eddies have been shown to increase the biological activity within and around their vortices,
+    normally by cyclonic eddies transporting nutrient-rich, cold, bottom water to the surface and anticyclonic eddies transporting nutrient-rich water along the coast to deeper
+    offshore regions, or by providing horizontal stirring, etc. \cite{website:tracking_eddies} \cite{article:brannigan_2016}
+
+    There's various methods to detect eddies using satellite imagery - tradionally detected using ``Sea Level Anomalies'' (SLA) images, which
+    shows the height variance in the ocean compared to some mean.
     
-    \cite{article:frenger_2013}
-
-    Furthermore, ...
-
-
-
-    \dots
+    However, SLA images can be limited in their accuracy due to their relatively low resolution.
+    Another approach, is detecting eddies using ``Sea Surface Temperature'' (SST) and ``Chlorophyll-a'' (CHLA) images.
+    They provide a much greater resolution, and should hopefully be able to show the differences in whether there's a cyclonic-, anticyclonic-, or no eddy present, which is what we'll explore in this report.
 
     \section{The Data}
 
@@ -157,7 +158,7 @@
     Since our images are from the northern hemisphere (\ref{fig:sst_map}) (\ref{fig:chla_map}), the anticyclonic eddies and cyclonic eddies
     are rotating clockwise, and counterclockwise, respectively. \cite{article:nutrition_eddies}
 
-    In a cyclonic eddy, we would expect phytoplankton to grow in the edges of the eddy near the surface (due to the supply of nutrient-rich bottom-water), and
+    In a cyclonic eddy, we would expect phytoplankton to grow (excessively, compared to anticyclonic) in the edges of the eddy near the surface (due to the supply of nutrient-rich bottom-water), and
     therefore show up as a chlorophyll circle in our images. \cite{website:tracking_eddies}
 
     This does not seem to be very obvious - at least in this small subset of images.
@@ -415,7 +416,7 @@
         \end{minipage}
     \end{center}
 
-    The leftmost figure (\ref{fig:cnn_cm_validation}), shows the confusion matrix from validation data.
+    The leftmost figure (\ref{fig:cnn_cm_validation}), shows the confusion matrix from validation data, and the rightmost figure (\ref{fig:cnn_cm_train}) is from the training data.
     The current model is decent at classifying images, but around 30\% of classifications are wrong.
 
     In the previous section, the loss figure (\ref{fig:loss}) seemed to indicate we were overfitting, these figures however,
@@ -428,6 +429,7 @@
     Another possibility, is that we're overfitting specifically on each mini-batch and not on the whole training set,
     leading to generalization ability, but subpar performance.
 
+    \newpage
     \section{Random Forest Classifier}
 
     \subsection{Advantages}
@@ -449,7 +451,7 @@
     and then trained a random forest classifier on the output from the convolution layers.
 
     Like when training the CNN pipeline (\ref{sec:pipelines}), we also specify that the random forest classifier should compute balanced class weights
-    to use for its loss function.
+    to use for its loss function (i.e. splitting criteria).
 
     \subsection{Results}
 
@@ -479,7 +481,7 @@
 
     Additionaly, we see that (for these two datasets) it never incorrectly predicts a cyclone as an anticyclone, and vice-versa.
     It seems like it has definitly learned to distinguish these. Its only misclassifications are predicting ``Nothing''
-    around 4\% of the time when it's actually a cyclone or anticyclone.
+    around 4\% of the time when it's actually a cyclonic- or anticyclonic eddy.
 
     \newpage
     \section{Conclusion}
@@ -487,7 +489,7 @@
     To get a final, unbiased, metric on the performance of our model, we evaulate it on the remaining data.
     This tells us the actual generalization ability of our model - how well it adapts to new and unseen data.
 
-    In the figure below (\ref{fig:cnn_rf_cm_test}), we see that it predicted very well for the test data aswell, with a balanced accuracy of approximately 97\%.
+    In the figure below (\ref{fig:cnn_rf_cm_test}), we see that it predicted very well for the test dataeset aswell, with a balanced accuracy of approximately 97\%.
 
     We've achieved a quite robust model, at least for images in this format.
     Additionaly, the model was tested using multipile various initialization seeds for the random number generators, to further ensure

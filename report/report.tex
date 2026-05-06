@@ -53,17 +53,17 @@
     Oceanic eddies are vortices, either cyclonic or anticyclonic, with a diameter of around 10 km, created either
     by shears, turbulence, or the general instability between different water masses.
 
-    There's many reasons why one would want to detect eddies.
+    There are many reasons why one would want to detect eddies.
     
     Eddies affect the air-sea heat and moisture flux, which has a local impact on cloud coverage, precipitation, turbulence and wind.
-    These effects can of course impact the weather systems across the globe, and detecting eddies can therefore help with more accuracte
+    These effects can of course impact the weather systems across the globe, and detecting eddies can therefore help with more accurate
     weather models, tracking climate change, etc. \cite{article:frenger_2013}
 
     Furthermore, both cyclonic- and anticyclonic eddies have been shown to increase the biological activity within and around their vortices,
     normally by cyclonic eddies transporting nutrient-rich, cold, bottom water to the surface and anticyclonic eddies transporting nutrient-rich water along the coast to deeper
     offshore regions, or by providing horizontal stirring, etc. \cite{website:tracking_eddies} \cite{article:brannigan_2016}
 
-    There's various methods to detect eddies using satellite imagery - tradionally detected using ``Sea Level Anomalies'' (SLA) images, which
+    There are various methods to detect eddies using satellite imagery - traditionally detected using ``Sea Level Anomalies'' (SLA) images, which
     shows the height variance in the ocean compared to some mean.
     
     However, SLA images can be limited in their accuracy due to their relatively low resolution.
@@ -79,7 +79,7 @@
         \item[] \texttt{\textbf{TRAIN\_PNG}} - Dated \verb|.png| satellite training images across various categories.
         \item[] \texttt{\textbf{TEST\_PNG}} - Dated \verb|.png| satellite testing images across various categories.
         \item[] \texttt{\textbf{LABELS\_TRAIN}} - Dated \verb|.csv| files with training labels.
-        \item[] \texttt{\textbf{train\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the traning dataset.
+        \item[] \texttt{\textbf{train\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the training dataset.
         \item[] \texttt{\textbf{test\_images\_pkl}} - Dated folders, each containing various \verb|.pkl| files for the test dataset.
     \end{itemize}
 
@@ -107,11 +107,11 @@
 
     We now have a \verb|DataFrame| with training data, which we use to train our model.
 
-    Additionaly, we have a \verb|DataFrame| with test images.
-    We split this up into two, randomly sampled, \verb|DataFrame|'s: a validation set and a seperate test set.
+    Additionally, we have a \verb|DataFrame| with test images.
+    We split this up into two, randomly sampled, \verb|DataFrame|'s: a validation set and a separate test set.
     
-    The validation set is used to evaulate the performance of our models during model selection, and then, to get an unbiased metric on the
-    generalization ability of our final model, we'll evaulate it on the test set.
+    The validation set is used to evaluate the performance of our models during model selection, and then, to get an unbiased metric on the
+    generalization ability of our final model, we'll evaluate it on the test set.
 
     \section{Exploratory Data Analysis}    
 
@@ -155,7 +155,7 @@
         \end{figure}
     \end{minipage}
 
-    Since our images are from the northern hemisphere (\ref{fig:sst_map}) (\ref{fig:chla_map}), the anticyclonic eddies and cyclonic eddies
+    Since our images are from the Northern Hemisphere (\ref{fig:sst_map}) (\ref{fig:chla_map}), the anticyclonic eddies and cyclonic eddies
     are rotating clockwise, and counterclockwise, respectively. \cite{article:nutrition_eddies}
 
     In a cyclonic eddy, we would expect phytoplankton to grow (excessively, compared to anticyclonic) in the edges of the eddy near the surface (due to the supply of nutrient-rich bottom-water), and
@@ -188,18 +188,18 @@
         \end{minipage}
     \end{center}
 
-    By plotting all the images at their corresponding positions, we see that all of our observations are in the northern hemisphere.
-    Additionally, some of the images seem to be corrupt, in that they are almost only one solid color. The common factor between these images for the SST images seems to be
+    By plotting all the images at their corresponding positions, we see that all of our observations are in the Northern Hemisphere.
+    Additionally, some images seem to be corrupt, in that they are almost only one solid color. The common factor between these images for the SST images seems to be
     that they're taken close to land - we might be getting some interference from the shore. For the CHLA images, we see that most of the images seem to be corrupted - this is most
     likely due to cloud cover.
     
-    However, there's a possibility whether an image is ``corrupted'', i.e. the presence of clouds, could help us determine whether an image shows an cyclonic or anticyclonic eddy.
-    It is shown that the difference in air-sea heat temperature depending on whether we have a cyclonic- or anticyclonic eddy could have an affect on cloud cover.
+    However, there's a possibility whether an image is ``corrupted'', i.e. the presence of clouds, could help us determine whether an image shows a cyclonic or anticyclonic eddy.
+    It is shown that the difference in air-sea heat temperature depending on whether we have a cyclonic- or anticyclonic eddy could have an effect on cloud cover.
     
     \cite{article:frenger_2013}
 
-    For SST, a good filtering strategy turned out to be mapping all of the images to a scale from negative one to positive one, and then filtering out images where the absolute pixel sums were in the top 6\% of images.
-    Similary, for CHLA, mapping all of the images to a scale from zero to positive one, and filtering out images where the pixel sum were in the bottom 98\%, turned out to be a good filter, as seen below.
+    For SST, a good filtering strategy turned out to be mapping all the images to a scale from negative one to positive one, and then filtering out images where the absolute pixel sums were in the top 6\% of images.
+    Similarly, for CHLA, mapping all the images to a scale from zero to positive one, and filtering out images where the pixel sum were in the bottom 98\%, turned out to be a good filter, as seen below.
     
     \begin{center}
         \begin{minipage}{.49\textwidth}
@@ -247,7 +247,7 @@
     \subsection{Orientation} \label{sec:orientation}
 
     In the matrix containing per-pixel latitude coordinates for SST, it was discovered that the SST images are essentially flipped
-    vertically. To resolve this, all of the SST images were flipped along their vertical axis, as illustrated below.
+    vertically. To resolve this, all the SST images were flipped along their vertical axis, as illustrated below.
     This was not the case with the CHLA images.
 
     \begin{center}
@@ -282,17 +282,17 @@
 
     \subsection{Scaling and Resizing} \label{sec:scaling_and_resizing}
 
-    There's different resolutions both inter- and intra-category between SST and CHLA.
+    There are different resolutions both inter- and intra-category between SST and CHLA.
     We need to resize these images in order to make the compatible with PyTorch's tensors.
 
-    There's various methods to do this, most of which require some form of interpolation.
+    There are various methods to do this, most of which require some form of interpolation.
     But, given the low resolution, and the potential loss of quality, this might not be a good solution.
 
     Considering that we seem to be classifying images where the eddies are centered in the
     image (\ref{fig:cyclonic_eddies}) (\ref{fig:anticyclonic_eddies}), and that the images are \textit{almost} the same resolution,
     cropping the edges of the images seemed to be a better solution.
 
-    Additionaly, the images are are in greyscale, with pixel values between 0 and 255.
+    Additionally, the images are in grayscale, with pixel values between 0 and 255.
     We'll scale these values before feeding them into our model, using a \verb|MinMaxScaler| to a range between 0 and 1.
 
     \subsection{Applying Filtering} \label{sec:applying_filtering}
@@ -300,10 +300,10 @@
     As showed previously (\ref{sec:filtering_images}), we have a way to filter out ``corrupt'' images.
 
     For SST, the reasoning for the corrupted images seems to be quite obvious, in that there's some interference from the land.
-    Considering there's also so few samples, it seems quite safe to remove these from our training samples, but we'll test multipile implementations.
+    Considering there's also so few samples, it seems quite safe to remove these from our training samples, but we'll test multiple implementations.
 
     However, for the CHLA images, we're filtering out approximately 92\% of the images, and removing these would most likely degrade the performance
-    of our model quite severely. There's other options, such as masking out the corrupt images, e.g. by filling them with ones/zeros.
+    of our model quite severely. There are other options, such as masking out the corrupt images, e.g. by filling them with ones/zeros.
     We could also add a new channel, which specifies if an image is corrupt or not, e.g. a channel where all the pixels are ones/zeros marks for corrupt CHLA images
     and vice-versa. These approaches are also something we could do for the SST images.
 
@@ -322,8 +322,8 @@
 
     \subsection{Configuration} \label{sec:cnn_configuration}
 
-    For the CNN, we used three convolution layers. All of the convolution layers use a kernel size of three, and padding such that the input and output dimensions have
-    the same dimensions. The first convolution layer transform the input into 16 channels, and each following convolution layer doubles the channel dimensions.
+    For the CNN, we used three convolution layers. All the convolution layers use a kernel size of three, and padding such that the input and output dimensions have
+    the same dimensions. The first convolution layer transforms the input into 16 channels, and each following convolution layer doubles the channel dimensions.
     Additionally, after convolution, we apply batch normalization, the ReLU activation function, and pooling.
     The two first layers use \verb|MaxPool2d| with a sliding $2 \times 2$ window - selecting the maximum value within its window.
     The final convolution layer, uses \verb|AdaptiveAvgPool2d|, which computes the mean within, unlike \verb|MaxPool2d|, dynamic regions.
@@ -338,14 +338,14 @@
 
     \subsection{Pipelines} \label{sec:pipelines}
 
-    We test multipile pipelines, but all which have some default steps:
+    We test multiple pipelines, but all which have some default steps:
     \begin{itemize}
         \item Orientating the images (\ref{sec:orientation})
         \item Scaling and resizing the images (\ref{sec:scaling_and_resizing})
         \item Transforming into tensors.
     \end{itemize}
 
-    The training dataset has some inbalance in the distribution between classes, we have approximately:
+    The training dataset has some imbalance in the distribution between classes, we have approximately:
     \begin{itemize}
         \item No eddies: 38.15\%
         \item Cyclonic eddies: 32.76\%
@@ -424,7 +424,7 @@
     
     We have almost the exact same accuracy between the training and validation datasets.
     The subpar performance of our model might be due to the fully connected layers (or the convolution layers) simply not being very good at this task,
-    and it's small discrepancies between our datasets that results in this gap between training- and validation loss.
+    and its small discrepancies between our datasets that results in this gap between training- and validation loss.
     
     Another possibility, is that we're overfitting specifically on each mini-batch and not on the whole training set,
     leading to generalization ability, but subpar performance.
@@ -456,7 +456,7 @@
     \subsection{Results}
 
     This approach achieved much better results on the validation data.
-    It achieved an balanced accuracy of approximately 96\% - much better compared to the CNN, which acheived 70\%.
+    It achieved a balanced accuracy of approximately 96\% - much better compared to the CNN, which achieved 70\%.
 
     \begin{center}
         \begin{minipage}{.49\textwidth}
@@ -479,20 +479,20 @@
         \end{minipage}
     \end{center}
 
-    Additionaly, we see that (for these two datasets) it never incorrectly predicts a cyclone as an anticyclone, and vice-versa.
-    It seems like it has definitly learned to distinguish these. Its only misclassifications are predicting ``Nothing''
+    Additionally, we see that (for these two datasets) it never incorrectly predicts a cyclone as an anticyclone, and vice-versa.
+    It seems like it has definitely learned to distinguish these. Its only misclassifications are predicting ``Nothing''
     around 4\% of the time when it's actually a cyclonic- or anticyclonic eddy.
 
     \newpage
     \section{Conclusion}
 
-    To get a final, unbiased, metric on the performance of our model, we evaulate it on the remaining data.
+    To get a final, unbiased, metric on the performance of our model, we evaluate it on the remaining data.
     This tells us the actual generalization ability of our model - how well it adapts to new and unseen data.
 
-    In the figure below (\ref{fig:cnn_rf_cm_test}), we see that it predicted very well for the test dataeset aswell, with a balanced accuracy of approximately 97\%.
+    In the figure below (\ref{fig:cnn_rf_cm_test}), we see that it predicted very well for the test dataset as well, with a balanced accuracy of approximately 97\%.
 
     We've achieved a quite robust model, at least for images in this format.
-    Additionaly, the model was tested using multipile various initialization seeds for the random number generators, to further ensure
+    Additionally, the model was tested using multiple various initialization seeds for the random number generators, to further ensure
     robustness.
 
     \begin{center}

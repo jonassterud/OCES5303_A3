@@ -33,7 +33,7 @@
     \maketitle
 
     \begin{abstract}
-        Historically, oceanic eddies have been detected using ``Sea Level Anomolies'' (SLA) satellite images.
+        Historically, oceanic eddies have been detected using ``Sea Level Anomalies'' (SLA) satellite images.
         However, the SLA resolution limits the accuracy - therefore, we'll deploy a ``Convolutional Neural Network'' (CNN)
         to detect eddy features using other satellite formats without such limitations: ``Sea Surface Temperature'' (SST) and ``Chlorophyll-a'' (CHLA).
     \end{abstract}
@@ -47,6 +47,27 @@
     \newpage
     \tableofcontents
     \newpage
+
+    \section{Introduction}
+
+    Oceanic eddies are vortices, either cyclonic or anticyclonic, with a diameter of around 10 km.
+
+    There's various methods to detect eddies using satellite imagery - tradionally detected using ``Sea Level Anomalies'' images, which
+    shows the height variance in the ocean compared to some mean.
+
+    There's many reasons why one would want to detect eddies.
+    
+    Eddies affect the air-sea heat and moisture flux, which has a local impact on cloud coverage, precipitation, turbulence and wind.
+    These effects can of course impact the weather systems across the globe, and detecting eddies can therefore help with more accuracte
+    weather models, tracking climate change, etc.
+    
+    \cite{article:frenger_2013}
+
+    Furthermore, ...
+
+
+
+    \dots
 
     \section{The Data}
 
@@ -366,6 +387,11 @@
 
     There seems to be some overfitting, and this is just 30 epochs - and, increasing the epochs, just increases the overfitting.
 
+    The loss tells us, as the model grows more complex, it's confidence when predicting wrong actually increases
+    and/or it's confidence when predicting correct decreases (for the validation set within each mini-batch).
+
+    A reasonable conclusion to draw, from looking at this figure, is that the model's performance would suffer due to overfitting.
+
     \subsection{Results}
     
     \begin{center}
@@ -392,16 +418,16 @@
     The leftmost figure (\ref{fig:cnn_cm_validation}), shows the confusion matrix from validation data.
     The current model is decent at classifying images, but around 30\% of classifications are wrong.
 
-    A reasonable conclusion to draw, from looking at this figure, is that the model is suffering due to overfitting - but,
-    the confusion matrix for the training data, on the right (\ref{fig:cnn_cm_train}), tells another story.
+    In the previous section, the loss figure (\ref{fig:loss}) seemed to indicate we were overfitting, these figures however,
+    seem to show that our model does \textit{not} struggle to generalize.
     
     We have almost the exact same accuracy between the training and validation datasets.
-    The subpar performance of our model might be due to the fully connected layers simply not being very good at this task.
+    The subpar performance of our model might be due to the fully connected layers (or the convolution layers) simply not being very good at this task,
+    and it's small discrepancies between our datasets that results in this gap between training- and validation loss.
     
     Another possibility, is that we're overfitting specifically on each mini-batch and not on the whole training set,
     leading to generalization ability, but subpar performance.
-    
-    \newpage
+
     \section{Random Forest Classifier}
 
     \subsection{Advantages}
@@ -409,6 +435,11 @@
     Random forest's uses a collection of decision trees trained on random subsets of data,
     and chooses an output based on the majority vote (for classification) - they're known to being less likely
     to overfit, compared to standard decision trees.
+
+    We observed that it's probably either our convolution layers that struggle to extract features from our images, or it's
+    the fully connected layers that struggle to classify the images based on the extracted features.
+
+    We'll compare the CNN model with a random forest classifier.
 
     \cite{enwiki:1350010429}
 
@@ -423,7 +454,7 @@
     \subsection{Results}
 
     This approach achieved much better results on the validation data.
-    It acheived an balanced accuracy of approximately 96\%.
+    It achieved an balanced accuracy of approximately 96\% - much better compared to the CNN, which acheived 70\%.
 
     \begin{center}
         \begin{minipage}{.49\textwidth}
@@ -446,6 +477,10 @@
         \end{minipage}
     \end{center}
 
+    Additionaly, we see that (for these two datasets) it never incorrectly predicts a cyclone as an anticyclone, and vice-versa.
+    It seems like it has definitly learned to distinguish these. Its only misclassifications are predicting ``Nothing''
+    around 4\% of the time when it's actually a cyclone or anticyclone.
+
     \newpage
     \section{Conclusion}
 
@@ -454,7 +489,7 @@
 
     In the figure below (\ref{fig:cnn_rf_cm_test}), we see that it predicted very well for the test data aswell, with a balanced accuracy of approximately 97\%.
 
-    We've acheived a quite robust model, at least for images in this format.
+    We've achieved a quite robust model, at least for images in this format.
     Additionaly, the model was tested using multipile various initialization seeds for the random number generators, to further ensure
     robustness.
 
